@@ -80,6 +80,12 @@ public class EC2Service {
         return status==InstanceStateName.RUNNING;
     }
 
+    public boolean isInstanceCheckPassed(String instanceId) throws Ec2Exception {
+        DescribeInstanceStatusRequest request = DescribeInstanceStatusRequest.builder().instanceIds(instanceId).build();
+        DescribeInstanceStatusResponse response = ec2.describeInstanceStatus(request);
+        return response.instanceStatuses().stream().allMatch(is -> is.systemStatus().status().name().equals("OK"));
+    }
+
     public void startInstance(String instanceId) {
         StartInstancesRequest request = StartInstancesRequest.builder()
                 .instanceIds(instanceId).build();

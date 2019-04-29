@@ -24,12 +24,15 @@ public class ApplicationServerCreatedListener {
     @EventListener
     public void handleServerCreated(ApplicationServerCreatedEvent event) throws InterruptedException {
         System.out.println("Server was created " + event.getInstanceID());
-        System.out.println("Wait until everything is up and run the scripts");
         while (!ec2Service.isInstanceRunning(event.getInstanceID())) {
             System.out.println("Wait for the instance...");
             Thread.sleep(500);
-
         }
+        while (!ec2Service.isInstanceCheckPassed(event.getInstanceID())) {
+            System.out.println("Checking instance...");
+            Thread.sleep(500);
+        }
+
         String commandID = ec2Service.runCommand(event.getInstanceID(), this.awsConfig.getCommand());
         while (!ec2Service.isCommandInvocationSuccess(event.getInstanceID(),commandID)) {
             System.out.println("Wait for the command to be executed...");
