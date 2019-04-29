@@ -26,11 +26,14 @@ public class ApplicationServerCreatedListener {
         System.out.println("Server was created " + event.getInstanceID());
         System.out.println("Wait until everything is up and run the scripts");
         while (!ec2Service.isInstanceRunning(event.getInstanceID())) {
-            Thread.sleep(100);
+            System.out.println("Wait for the instance...");
+            Thread.sleep(500);
+
         }
         String commandID = ec2Service.runCommand(event.getInstanceID(), this.awsConfig.getCommand());
         while (!ec2Service.isCommandInvocationSuccess(event.getInstanceID(),commandID)) {
-            Thread.sleep(100);
+            System.out.println("Wait for the command to be executed...");
+            Thread.sleep(500);
         }
         System.out.println(ec2Service.getCommandInvocationOutput(event.getInstanceID(), commandID));
         System.out.println("Send e-mail to the customer as everything is available");
