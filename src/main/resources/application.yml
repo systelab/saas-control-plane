@@ -1,0 +1,93 @@
+info:
+  app:
+    name: modulab-control-plane
+    description: Modulab Control Plane
+    version: 1.0
+server:
+  port: 8443
+  ssl:
+    key-store: classpath:keystore.p12
+    key-alias: selfsigned
+    key-store-type: PKCS12
+    key-store-password: password
+  # Enable response compression
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+  # Enable HTTP/2 support, if the current environment supports it
+  http2:
+    enabled: true
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+
+
+http-server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+security:
+  jwt:
+    client-secret: XY7kmzoNzl100
+    token-validity-in-seconds: 6060
+
+spring:
+  application:
+    name: modulab-control-plane
+  main:
+    #Avoid DataSource issue #1142 overriding bean definition
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:h2:file:~/modulab
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    max-active: 10
+    max-idle: 8
+    max-wait: 10000
+    min-evictable-idle-time-millis: 1000
+    min-idle: 8
+    time-between-eviction-runs-millis: 1
+
+  resources:
+    cache:
+      cachecontrol:
+        # Maximum time the response should be cached (in seconds)
+        max-age: 120
+        # The cache must re-validate stale resources with the server. Any expired resources must not be used without re-validating.
+        must-revalidate: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2
+
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: buckets
+      filter-method: servlet
+      filter-order: -10
+      url: .*
+      metrics:
+        tags:
+          - key: IP
+            expression: "getRemoteAddr()"
+      rate-limits:
+        - bandwidths:
+            - capacity: 10000
+              time: 1
+              unit: minutes
