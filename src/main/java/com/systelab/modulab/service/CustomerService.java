@@ -1,11 +1,15 @@
 package com.systelab.modulab.service;
 
+import com.systelab.modulab.config.AWSConfig;
+import com.systelab.modulab.event.ApplicationServerCreatedEvent;
 import com.systelab.modulab.exception.CustomerNotFoundException;
 import com.systelab.modulab.model.customer.Customer;
 import com.systelab.modulab.repository.CustomerRepository;
 import com.systelab.modulab.service.aws.AMI;
 import com.systelab.modulab.service.aws.EC2Service;
+import com.systelab.modulab.service.aws.RDSService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,12 +23,18 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final EC2Service ec2Service;
+    private final RDSService rdsService;
+    private final AWSConfig awsConfig;
+    private final ApplicationEventPublisher applicationEventPublisher;
+
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository, EC2Service ec2Service) {
+    public CustomerService(CustomerRepository customerRepository, EC2Service ec2Service, RDSService rdsService, AWSConfig awsConfig, ApplicationEventPublisher applicationEventPublisher) {
         this.customerRepository = customerRepository;
         this.ec2Service = ec2Service;
-
+        this.rdsService = rdsService;
+        this.awsConfig = awsConfig;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public Page<Customer> getAllCustomers(Pageable pageable) {
@@ -36,10 +46,15 @@ public class CustomerService {
         return this.customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(customerId));
     }
 
-    public Customer createCustomer(Customer p) {
-        String instance=this.ec2Service.createInstance(p.getNickname(), AMI.AMAZON_LINUX2_AMI);
-        p.setApplicationServerInstance(instance);
-        Customer saved=this.customerRepository.save(p);
+    public Customer createCustomer(Customer customer) {
+
+        String rdsInstance = this.rdsService.createInstance(customer.getNickname(), this.awsConfig.getVpc());
+        customer.setRdsInstance(rdsInstance);
+        String ec2Instance = this.ec2Service.createInstance(customer.getNickname(), AMI.AMAZON_LINUX2_AMI);
+        customer.setApplicationServerInstance(ec2Instance);
+        ApplicationServerCreatedEvent ec2InstanceCreated = new ApplicationServerCreatedEvent(this, ec2Instance);
+        applicationEventPublisher.publishEvent(ec2InstanceCreated);
+        Customer saved = this.customerRepository.save(customer);
         return saved;
     }
 

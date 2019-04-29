@@ -63,9 +63,9 @@ public class RDSService {
         rds.deleteDBInstance(request);
     }
 
-    public String createSecurityGroup(String vpcID) {
+    public String createSecurityGroup(String name, String vpcID) {
         CreateSecurityGroupRequest request = CreateSecurityGroupRequest.builder()
-                .groupName("temp3-rds-security-group")
+                .groupName(name+"-rds-security-group")
                 .description("Created from the RDS").vpcId(vpcID).build();
 
         CreateSecurityGroupResponse response = ec2.createSecurityGroup(request);
@@ -125,7 +125,7 @@ public class RDSService {
             rds.modifyDBParameterGroup( new ModifyDbParameterGroupRequest().withDbParameterGroupName(DbParameterGroupName).withParameters(parameters));
 */
 
-        String securityGroup= createSecurityGroup(vpcID);
+        String securityGroup= createSecurityGroup(name, vpcID);
         CreateDbInstanceRequest request2 = CreateDbInstanceRequest.builder()
                 .dbInstanceIdentifier(name)
                 .engine("oracle-se2")

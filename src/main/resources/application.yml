@@ -35,6 +35,10 @@ management:
       exposure:
         include: "*"
 
+aws:
+  vpc: 1212121212
+  command: uname -a
+
 security:
   jwt:
     client-secret: XY7kmzoNzl100

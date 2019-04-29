@@ -36,6 +36,8 @@ public class Customer extends ModelBase {
 
     private String applicationServerInstance;
 
+    private String rdsInstance;
+
     private LocalDate initialContract;
 
     @Embedded
