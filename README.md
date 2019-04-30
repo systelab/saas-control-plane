@@ -1,27 +1,27 @@
-[![Build Status](https://travis-ci.org/systelab/modulab-control-plane.svg?branch=master)](https://travis-ci.org/systelab/modulab-control-plane)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7ce4e563c45b4d09a975d61bed7d5d50)](https://www.codacy.com/app/alfonsserra/modulab-control-plane?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=systelab/modulab-control-plane&amp;utm_campaign=Badge_Grade)
-[![Known Vulnerabilities](https://snyk.io/test/github/systelab/modulab-control-plane/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/systelab/modulab-control-plane?targetFile=pom.xml)
+[![Build Status](https://travis-ci.org/systelab/saas-control-plane.svg?branch=master)](https://travis-ci.org/systelab/saas-control-plane)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7ce4e563c45b4d09a975d61bed7d5d50)](https://www.codacy.com/app/alfonsserra/saas-control-plane?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=systelab/saas-control-plane&amp;utm_campaign=Badge_Grade)
+[![Known Vulnerabilities](https://snyk.io/test/github/systelab/saas-control-plane/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/systelab/saas-control-plane?targetFile=pom.xml)
 
-# `modulab-control-plane` — AWS Modulab Control Plane
+# `saas-control-plane` — AWS Application Control Plane
 
 
 ## Getting Started
 
-To get you started you can simply clone the `modulab-control-plane` repository and install the dependencies:
+To get you started you can simply clone the `saas-control-plane` repository and install the dependencies:
 
 ### Prerequisites
 
-You need [git][git] to clone the `modulab-control-plane` repository.
+You need [git][git] to clone the `saas-control-plane` repository.
 
 You will need [OpenJDK 11][jdk-download] and [Maven][maven].
 
-### Clone `modulab-control-plane`
+### Clone `saas-control-plane`
 
-Clone the `modulab-control-plane` repository using git:
+Clone the `saas-control-plane` repository using git:
 
 ```bash
-git clone https://github.com/systelab/modulab-control-plane.git
-cd modulab-control-plane
+git clone https://github.com/systelab/saas-control-plane.git
+cd saas-control-plane
 ```
 
 ### Install Dependencies
@@ -38,7 +38,7 @@ To launch the server, simply run with java -jar the generated jar file.
 
 ```bash
 cd target
-java -jar modulab-control-plane-1.0.jar
+java -jar saas-control-plane-1.0.jar
 ```
 
 ### Certificate
@@ -72,13 +72,13 @@ There is another build rule to trigger a new tag and create a 'version-x.y.z' im
 You can always manually create the image with the following command:
 
 ```bash
-docker build -t systelab/modulab-control-plane . 
+docker build -t systelab/saas-control-plane . 
 ```
 
 ### Run the container
 
 ```bash
-docker run -p 8443:8443 -p 8080:8080 systelab/modulab-control-plane
+docker run -p 8443:8443 -p 8080:8080 systelab/saas-control-plane
 ```
 
 The app will be available at https://localhost:8443/swagger-ui.html

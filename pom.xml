@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.systelab</groupId>
-    <artifactId>modulab-control-plane</artifactId>
+    <artifactId>saas-control-plane</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
@@ -32,7 +32,7 @@
         </dependencies>
     </dependencyManagement>
 
-    <name>modulab-control-plane</name>
+    <name>saas-control-plane</name>
     <url>http://maven.apache.org</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

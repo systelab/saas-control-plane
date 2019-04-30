@@ -1,7 +1,7 @@
 info:
   app:
-    name: modulab-control-plane
-    description: Modulab Control Plane
+    name: saas-control-plane
+    description: SaaS Control Plane
     version: 1.0
 server:
   port: 8443
@@ -46,12 +46,12 @@ security:
 
 spring:
   application:
-    name: modulab-control-plane
+    name: saas-control-plane
   main:
     #Avoid DataSource issue #1142 overriding bean definition
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:h2:file:~/modulab
+    url: jdbc:h2:file:~/saas
     username: sa
     password:
     driver-class-name: org.h2.Driver

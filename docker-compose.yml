@@ -1,7 +1,7 @@
 version: "2"
 services:
   backend1:
-    image: systelab/modulab-control-plane:latest
+    image: systelab/saas-control-plane:latest
     ports:
       - "8080:8080"
       - "8443:8443"
