@@ -119,16 +119,15 @@ public class EC2Service {
     }
 
     // Remember to add the policy AmazonSSMFullAccess to the IAM role associated to the instance
-    public String runCommand(String instanceId, String script) {
+    public String runCommand(String instanceId, List<String> script) {
 
-        List<String> value = new ArrayList();
-        value.add(script);
+
 
         Map<String, List<String>> commands = new HashMap();
-        commands.put("commands", value);
+        commands.put("commands", script);
 
         SendCommandRequest request = SendCommandRequest.builder().instanceIds(instanceId).documentName("AWS-RunShellScript")
-                .parameters(commands).build();
+               .parameters(commands).build();
         SendCommandResponse response = ssm.sendCommand(request);
         return response.command().commandId();
     }

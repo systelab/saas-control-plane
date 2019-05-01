@@ -12,6 +12,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Component
 public class CustomerCreatedListener {
 
@@ -65,7 +68,12 @@ public class CustomerCreatedListener {
     }
 
     private void runInitializationScript(String ec2Instance) throws InterruptedException {
-        String commandID = ec2Service.runCommand(ec2Instance, this.awsConfig.getCommand());
+        List<String> script = Arrays.asList(
+                "wget http://download.jboss.org/wildfly/14.0.1.Final/wildfly-14.0.1.Final.tar.gz -P /home/ec2-user",
+                "cd /opt",
+                "sudo tar -xvzf /home/ec2-user/wildfly-14.0.1.Final.tar.gz",
+                "sudo mv wildfly-14.0.1.Final wildfly");
+        String commandID = ec2Service.runCommand(ec2Instance, script);
         System.out.println("Commmand " + commandID + " created.");
         Thread.sleep(500);
         while (!ec2Service.isCommandInvocationSuccess(ec2Instance, commandID)) {
