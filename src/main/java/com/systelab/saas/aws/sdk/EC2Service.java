@@ -1,4 +1,4 @@
-package com.systelab.saas.aws.service;
+package com.systelab.saas.aws.sdk;
 
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.regions.Region;

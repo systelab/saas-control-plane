@@ -1,9 +1,9 @@
-package com.systelab.saas.aws;
+package com.systelab.saas.aws.service;
 
 import com.systelab.saas.aws.config.AWSConfig;
-import com.systelab.saas.aws.service.AMI;
-import com.systelab.saas.aws.service.EC2Service;
-import com.systelab.saas.aws.service.RDSService;
+import com.systelab.saas.aws.sdk.AMI;
+import com.systelab.saas.aws.sdk.EC2Service;
+import com.systelab.saas.aws.sdk.RDSService;
 import com.systelab.saas.event.CustomerCreatedEvent;
 import com.systelab.saas.model.customer.Customer;
 import com.systelab.saas.service.CustomerService;
