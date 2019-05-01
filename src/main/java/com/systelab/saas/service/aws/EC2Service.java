@@ -77,12 +77,16 @@ public class EC2Service {
 
         DescribeInstancesResponse response = ec2.describeInstances(request);
         InstanceStateName status=response.reservations().get(0).instances().get(0).state().name();
+        System.out.println("Instance is "+status+"...");
+
         return status==InstanceStateName.RUNNING;
     }
 
     public boolean isInstanceCheckPassed(String instanceId) throws Ec2Exception {
         DescribeInstanceStatusRequest request = DescribeInstanceStatusRequest.builder().instanceIds(instanceId).build();
         DescribeInstanceStatusResponse response = ec2.describeInstanceStatus(request);
+        System.out.println("Instance status is not checked...");
+
         return response.instanceStatuses().stream().allMatch(is -> is.systemStatus().status().name().equals("OK"));
     }
 
