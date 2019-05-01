@@ -1,13 +1,9 @@
 package com.systelab.saas.service;
 
-import com.systelab.saas.config.AWSConfig;
-import com.systelab.saas.event.Ec2InstanceCreatedEvent;
+import com.systelab.saas.event.CustomerCreatedEvent;
 import com.systelab.saas.exception.CustomerNotFoundException;
 import com.systelab.saas.model.customer.Customer;
 import com.systelab.saas.repository.CustomerRepository;
-import com.systelab.saas.service.aws.AMI;
-import com.systelab.saas.service.aws.EC2Service;
-import com.systelab.saas.service.aws.RDSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -22,18 +18,13 @@ import java.util.UUID;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
-    private final EC2Service ec2Service;
-    private final RDSService rdsService;
-    private final AWSConfig awsConfig;
+
     private final ApplicationEventPublisher applicationEventPublisher;
 
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository, EC2Service ec2Service, RDSService rdsService, AWSConfig awsConfig, ApplicationEventPublisher applicationEventPublisher) {
+    public CustomerService(CustomerRepository customerRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.customerRepository = customerRepository;
-        this.ec2Service = ec2Service;
-        this.rdsService = rdsService;
-        this.awsConfig = awsConfig;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -47,24 +38,37 @@ public class CustomerService {
     }
 
     public Customer createCustomer(Customer customer) {
-
-        String rdsInstance = this.rdsService.createInstance(customer.getNickname(), this.awsConfig.getVpc());
-        customer.getRds().setInstanceId(rdsInstance);
-
-        String ec2Instance = this.ec2Service.createInstance(customer.getNickname(), AMI.AMAZON_LINUX2_AMI, this.awsConfig.getKeyPairName(), this.awsConfig.getEc2SecurityGroup());
-        customer.getEc2().setInstanceId(ec2Instance);
-        Ec2InstanceCreatedEvent ec2InstanceCreated = new Ec2InstanceCreatedEvent(this, rdsInstance, ec2Instance);
-        applicationEventPublisher.publishEvent(ec2InstanceCreated);
         Customer saved = this.customerRepository.save(customer);
+        CustomerCreatedEvent customerCreated = new CustomerCreatedEvent(this, saved);
+        applicationEventPublisher.publishEvent(customerCreated);
         return saved;
     }
 
     public Customer updateCustomer(UUID id, Customer p) {
         return this.customerRepository.findById(id).map(existing -> {
-            p.setId(id);
-            return this.customerRepository.save(p);
+            existing.setName(p.getName());
+            existing.setEmail(p.getEmail());
+            existing.setAddress(p.getAddress());
+            existing.setDatabaseServer(p.getDatabaseServer());
+            existing.setApplicationServer(p.getApplicationServer());
+            return this.customerRepository.save(existing);
         }).orElseThrow(() -> new CustomerNotFoundException(id));
     }
+
+    public Customer updateCustomerDatabase(UUID id, Customer p) {
+        return this.customerRepository.findById(id).map(existing -> {
+            existing.setDatabaseServer(p.getDatabaseServer());
+            return this.customerRepository.save(existing);
+        }).orElseThrow(() -> new CustomerNotFoundException(id));
+    }
+
+    public Customer updateCustomerApplicationServer(UUID id, Customer p) {
+        return this.customerRepository.findById(id).map(existing -> {
+            existing.setApplicationServer(p.getApplicationServer());
+            return this.customerRepository.save(existing);
+        }).orElseThrow(() -> new CustomerNotFoundException(id));
+    }
+
 
     public Customer removeCustomer(UUID id) {
         return this.customerRepository.findById(id).map(existing -> {

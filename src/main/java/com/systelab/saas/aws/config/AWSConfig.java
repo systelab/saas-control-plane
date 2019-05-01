@@ -1,4 +1,4 @@
-package com.systelab.saas.config;
+package com.systelab.saas.aws.config;
 
 import lombok.Getter;
 import lombok.Setter;

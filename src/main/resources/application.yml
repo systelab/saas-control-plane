@@ -36,8 +36,10 @@ management:
         include: "*"
 
 aws:
-  vpc: 1212121212
+  vpc: vpc-6d7a7006
   command: uname -a
+  ec2-security-group: sg-0d19b3050badf65d8
+  key-pair-name: WerfenSystelab
 
 security:
   jwt:

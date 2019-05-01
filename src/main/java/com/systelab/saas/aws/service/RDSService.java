@@ -1,4 +1,4 @@
-package com.systelab.saas.service.aws;
+package com.systelab.saas.aws.service;
 
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.regions.Region;
@@ -65,7 +65,7 @@ public class RDSService {
 
     public String createSecurityGroup(String name, String vpcID) {
         CreateSecurityGroupRequest request = CreateSecurityGroupRequest.builder()
-                .groupName(name+"-rds-security-group")
+                .groupName(name+"-db-security-group")
                 .description("Created from the RDS").vpcId(vpcID).build();
 
         CreateSecurityGroupResponse response = ec2.createSecurityGroup(request);
@@ -117,7 +117,7 @@ public class RDSService {
                     .description(description)
                     .dbParameterGroupFamily(family).build();
 
-            rds.createDBParameterGroup(request);
+            db.createDBParameterGroup(request);
 
 
             Collection<Parameter> parameters = new ArrayList<Parameter>();
@@ -132,7 +132,7 @@ public class RDSService {
                     .withApplyMethod(DbParameterApplyMethod2));
 
 
-            rds.modifyDBParameterGroup( new ModifyDbParameterGroupRequest().withDbParameterGroupName(DbParameterGroupName).withParameters(parameters));
+            db.modifyDBParameterGroup( new ModifyDbParameterGroupRequest().withDbParameterGroupName(DbParameterGroupName).withParameters(parameters));
 */
 
         String securityGroup= createSecurityGroup(name, vpcID);

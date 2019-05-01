@@ -63,7 +63,7 @@ public class CustomerController {
         return ResponseEntity.created(uri).body(customer);
     }
 
-    @ApiOperation(value = "Create or Update (idempotent) an existing Customer", authorizations = { @Authorization(value = "Bearer") })
+    @ApiOperation(value = "Update an existing Customer", authorizations = { @Authorization(value = "Bearer") })
     @PutMapping("customers/{uid}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable("uid") UUID id, @RequestBody @ApiParam(value = "Customer", required = true) @Valid Customer p) {
         Customer customer = this.customerService.updateCustomer(id, p);

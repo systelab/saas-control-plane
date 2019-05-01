@@ -1,4 +1,4 @@
-package com.systelab.saas.service.aws;
+package com.systelab.saas.aws.service;
 
 public enum AMI {
     AMAZON_LINUX2_AMI("ami-09def150731bdbcc2");

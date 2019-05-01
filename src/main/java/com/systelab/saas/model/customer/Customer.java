@@ -11,9 +11,8 @@ import javax.validation.constraints.Size;
 
 @Data
 @Entity
-@Audited
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "customer", uniqueConstraints = @UniqueConstraint(columnNames = "nickname"))
+@Table(name = "customer")
 public class Customer extends ModelBase {
 
     @NotNull
@@ -27,25 +26,25 @@ public class Customer extends ModelBase {
     private String email;
 
     @AttributeOverrides({
-            @AttributeOverride(name="instanceId", column= @Column(name="ec2instanceid")),
-            @AttributeOverride(name="status", column= @Column(name="ec2status"))
+            @AttributeOverride(name="instanceId", column= @Column(name="as_instanceid")),
+            @AttributeOverride(name="status", column= @Column(name="as_status"))
     })
     @Embedded
-    private ComputationInstance ec2;
+    private ComputationInstance applicationServer;
 
     @AttributeOverrides({
-            @AttributeOverride(name="instanceId", column= @Column(name="rdsinstanceid")),
-            @AttributeOverride(name="status", column= @Column(name="rdsstatus"))
+            @AttributeOverride(name="instanceId", column= @Column(name="db_instanceid")),
+            @AttributeOverride(name="status", column= @Column(name="db_status"))
     })
     @Embedded()
-    private ComputationInstance rds;
+    private ComputationInstance databaseServer;
 
     @Embedded
     private Address address;
 
     public Customer() {
-        ec2 = new ComputationInstance();
-        rds = new ComputationInstance();
+        applicationServer = new ComputationInstance();
+        databaseServer = new ComputationInstance();
     }
 
 }
