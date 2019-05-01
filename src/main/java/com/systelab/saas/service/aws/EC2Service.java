@@ -47,11 +47,11 @@ public class EC2Service {
         } while (nextToken != null);
     }
 
-    public String createInstance(String name, AMI ami) throws Ec2Exception {
-        return this.createInstance(name, ami, InstanceType.T2_SMALL);
+    public String createInstance(String name, AMI ami, String keyPairName, String securityGroup) throws Ec2Exception {
+        return this.createInstance(name, ami, InstanceType.T2_SMALL, keyPairName, securityGroup);
     }
 
-    public String createInstance(String name, AMI ami, InstanceType type) throws Ec2Exception {
+    public String createInstance(String name, AMI ami, InstanceType type, String keyPairName, String securityGroup) throws Ec2Exception {
         IamInstanceProfileSpecification spec = IamInstanceProfileSpecification.builder().name("EC2ReadS3AserraModulab").build();
 
         RunInstancesRequest request = RunInstancesRequest.builder()
@@ -60,6 +60,8 @@ public class EC2Service {
                 .iamInstanceProfile(spec)
                 .maxCount(1)
                 .minCount(1)
+                .securityGroupIds(securityGroup)
+                .keyName(keyPairName)
                 .build();
 
         RunInstancesResponse response = ec2.runInstances(request);
@@ -72,22 +74,30 @@ public class EC2Service {
         return instanceId;
     }
 
-    public boolean isInstanceRunning(String instanceId) throws Ec2Exception {
+    public InstanceStateName getInstanceStatus(String instanceId) {
         DescribeInstancesRequest request = DescribeInstancesRequest.builder().instanceIds(instanceId).build();
 
         DescribeInstancesResponse response = ec2.describeInstances(request);
-        InstanceStateName status=response.reservations().get(0).instances().get(0).state().name();
-        System.out.println("Instance is "+status+"...");
+        InstanceStateName status = response.reservations().get(0).instances().get(0).state().name();
+        return status;
+    }
 
-        return status==InstanceStateName.RUNNING;
+    public boolean isInstanceRunning(String instanceId) throws Ec2Exception {
+        return getInstanceStatus(instanceId) == InstanceStateName.RUNNING;
     }
 
     public boolean isInstanceCheckPassed(String instanceId) throws Ec2Exception {
         DescribeInstanceStatusRequest request = DescribeInstanceStatusRequest.builder().instanceIds(instanceId).build();
         DescribeInstanceStatusResponse response = ec2.describeInstanceStatus(request);
-        System.out.println("Instance status is not checked...");
-
         return response.instanceStatuses().stream().allMatch(is -> is.systemStatus().status().name().equals("OK"));
+    }
+
+    public boolean isInstanceAvailable(String instanceId) throws Ec2Exception {
+        return isInstanceRunning(instanceId) && isInstanceCheckPassed(instanceId);
+    }
+
+    public String getInstanceState(String instanceId) {
+        return getInstanceStatus(instanceId).toString();
     }
 
     public void startInstance(String instanceId) {

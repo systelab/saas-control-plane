@@ -15,5 +15,7 @@ public class AWSConfig implements Serializable {
 
     private String vpc;
     private String command;
+    private String keyPairName;
+    private String ec2SecurityGroup;
 
 }

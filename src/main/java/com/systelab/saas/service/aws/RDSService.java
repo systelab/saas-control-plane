@@ -89,6 +89,16 @@ public class RDSService {
         ec2.authorizeSecurityGroupIngress(request);
     }
 
+    public boolean isInstanceAvailable(String instanceId) {
+        return getInstanceState(instanceId).equalsIgnoreCase("available");
+    }
+
+    public String getInstanceState(String instanceId) {
+        DescribeDbInstancesRequest request = DescribeDbInstancesRequest.builder().dbInstanceIdentifier(instanceId).build();
+        DescribeDbInstancesResponse response = rds.describeDBInstances(request);
+        return response.dbInstances().get(0).dbInstanceStatus();
+    }
+
     public void addOutboundRules(String groupID) {
 
         IpRange ipRange1 = IpRange.builder().cidrIp("0.0.0.0/0").build();

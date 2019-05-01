@@ -50,9 +50,9 @@ public class CustomerService {
 
         String rdsInstance = this.rdsService.createInstance(customer.getNickname(), this.awsConfig.getVpc());
         customer.setRdsInstance(rdsInstance);
-        String ec2Instance = this.ec2Service.createInstance(customer.getNickname(), AMI.AMAZON_LINUX2_AMI);
+        String ec2Instance = this.ec2Service.createInstance(customer.getNickname(), AMI.AMAZON_LINUX2_AMI,this.awsConfig.getKeyPairName(),this.awsConfig.getEc2SecurityGroup());
         customer.setApplicationServerInstance(ec2Instance);
-        ApplicationServerCreatedEvent ec2InstanceCreated = new ApplicationServerCreatedEvent(this, ec2Instance);
+        ApplicationServerCreatedEvent ec2InstanceCreated = new ApplicationServerCreatedEvent(this, rdsInstance, ec2Instance);
         applicationEventPublisher.publishEvent(ec2InstanceCreated);
         Customer saved = this.customerRepository.save(customer);
         return saved;
