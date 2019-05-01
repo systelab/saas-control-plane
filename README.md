@@ -2,22 +2,20 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7ce4e563c45b4d09a975d61bed7d5d50)](https://www.codacy.com/app/alfonsserra/saas-control-plane?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=systelab/saas-control-plane&amp;utm_campaign=Badge_Grade)
 [![Known Vulnerabilities](https://snyk.io/test/github/systelab/saas-control-plane/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/systelab/saas-control-plane?targetFile=pom.xml)
 
-# `saas-control-plane` — AWS Application Control Plane
+# AWS Application Control Plane
 
 
 ## Getting Started
 
-To get you started you can simply clone the `saas-control-plane` repository and install the dependencies:
+To get you started, simply clone the `saas-control-plane` repository and install the dependencies:
 
 ### Prerequisites
 
-You need [git][git] to clone the `saas-control-plane` repository.
-
-You will need [OpenJDK 11][jdk-download] and [Maven][maven].
+You will need [git][git] to clone the `saas-control-plane` repository, [OpenJDK 11][jdk-download] and [Maven][maven].
 
 ### Clone `saas-control-plane`
 
-Clone the `saas-control-plane` repository using git:
+Clone the `saas-control-plane` repository with the following command:
 
 ```bash
 git clone https://github.com/systelab/saas-control-plane.git
@@ -26,7 +24,7 @@ cd saas-control-plane
 
 ### Install Dependencies
 
-In order to install the dependencies and generate the Uber jar you must run:
+In order to install the dependencies and generate the Uber jar, run:
 
 ```bash
 mvn clean install
@@ -34,7 +32,7 @@ mvn clean install
 
 ### Run
 
-To launch the server, simply run with java -jar the generated jar file.
+To launch the server, run:
 
 ```bash
 cd target
@@ -43,9 +41,7 @@ java -jar saas-control-plane-1.0.jar
 
 ### Certificate
 
-A self signed certificate is provided in order to show use how to setup the application.
-
-The certificate was generated with the following commands:
+A self signed certificate is provided. The certificate was generated with the following commands:
 
 ```bash
 keytool -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass password -validity 365 -keysize 2048
@@ -57,9 +53,9 @@ keytool -importkeystore -srckeystore keystore.jks -destkeystore keystore.p12 -de
 
 ## API
 
-You will find the swagger UI at https://localhost:8443/swagger-ui.html and http://localhost:8080/swagger-ui.html 
+Swagger UI will be available at https://localhost:8443/swagger-ui.html and http://localhost:8080/swagger-ui.html 
 
-First generate a token by login as user Systelab and password Systelab. After that authorize Swagger by copying the bearer.
+First generate a token by login as user Systelab and password Systelab. Once done that, authorize Swagger by copying the bearer.
 
 ## Docker
 
@@ -81,9 +77,7 @@ docker build -t systelab/saas-control-plane .
 docker run -p 8443:8443 -p 8080:8080 systelab/saas-control-plane
 ```
 
-The app will be available at https://localhost:8443/swagger-ui.html
-
-
+The REST Api will be available at https://localhost:8443/swagger-ui.html
 
 
 [git]: https://git-scm.com/
