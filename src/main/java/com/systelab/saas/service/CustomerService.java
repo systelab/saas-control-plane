@@ -1,7 +1,7 @@
 package com.systelab.saas.service;
 
 import com.systelab.saas.config.AWSConfig;
-import com.systelab.saas.event.ApplicationServerCreatedEvent;
+import com.systelab.saas.event.Ec2InstanceCreatedEvent;
 import com.systelab.saas.exception.CustomerNotFoundException;
 import com.systelab.saas.model.customer.Customer;
 import com.systelab.saas.repository.CustomerRepository;
@@ -49,10 +49,11 @@ public class CustomerService {
     public Customer createCustomer(Customer customer) {
 
         String rdsInstance = this.rdsService.createInstance(customer.getNickname(), this.awsConfig.getVpc());
-        customer.setRdsInstance(rdsInstance);
-        String ec2Instance = this.ec2Service.createInstance(customer.getNickname(), AMI.AMAZON_LINUX2_AMI,this.awsConfig.getKeyPairName(),this.awsConfig.getEc2SecurityGroup());
-        customer.setApplicationServerInstance(ec2Instance);
-        ApplicationServerCreatedEvent ec2InstanceCreated = new ApplicationServerCreatedEvent(this, rdsInstance, ec2Instance);
+        customer.getRds().setInstanceId(rdsInstance);
+
+        String ec2Instance = this.ec2Service.createInstance(customer.getNickname(), AMI.AMAZON_LINUX2_AMI, this.awsConfig.getKeyPairName(), this.awsConfig.getEc2SecurityGroup());
+        customer.getEc2().setInstanceId(ec2Instance);
+        Ec2InstanceCreatedEvent ec2InstanceCreated = new Ec2InstanceCreatedEvent(this, rdsInstance, ec2Instance);
         applicationEventPublisher.publishEvent(ec2InstanceCreated);
         Customer saved = this.customerRepository.save(customer);
         return saved;
