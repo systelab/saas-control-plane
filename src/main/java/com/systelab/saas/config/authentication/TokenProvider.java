@@ -12,7 +12,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 
 
 @Configuration
-public class TokenProvider implements Serializable {
+public class TokenProvider {
 
     public static final String AUTHORITIES_KEY = "scopes";
 
