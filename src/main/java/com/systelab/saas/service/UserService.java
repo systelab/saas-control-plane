@@ -4,6 +4,7 @@ import com.systelab.saas.config.authentication.TokenProvider;
 import com.systelab.saas.model.user.User;
 import com.systelab.saas.exception.UserNotFoundException;
 import com.systelab.saas.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import java.security.Principal;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
@@ -25,13 +27,6 @@ public class UserService {
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserService(UserRepository userRepository, AuthenticationManager authenticationManager, TokenProvider tokenProvider, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.authenticationManager = authenticationManager;
-        this.tokenProvider = tokenProvider;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public String authenticateUserAndGetToken(String login, String password) {
 

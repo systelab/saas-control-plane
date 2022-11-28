@@ -4,6 +4,7 @@ import com.systelab.saas.event.CustomerCreatedEvent;
 import com.systelab.saas.exception.CustomerNotFoundException;
 import com.systelab.saas.model.customer.Customer;
 import com.systelab.saas.repository.CustomerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -15,18 +16,13 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-
-    @Autowired
-    public CustomerService(CustomerRepository customerRepository, ApplicationEventPublisher applicationEventPublisher) {
-        this.customerRepository = customerRepository;
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
 
     public Page<Customer> getAllCustomers(Pageable pageable) {
         final PageRequest page = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "name");

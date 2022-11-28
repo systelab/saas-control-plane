@@ -1,8 +1,13 @@
 package com.systelab.saas.config.authentication;
 
+
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.SignatureException;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,14 +18,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.Resource;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -30,11 +31,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
 
     private final TokenProvider tokenProvider;
-
-    @Autowired
-    public JwtAuthenticationFilter(TokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
@@ -64,8 +60,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             logger.error("An error occurred during while getting username from token.", e);
         } catch (ExpiredJwtException e) {
             logger.warn("The token is expired and not valid anymore.", e);
-        } catch (SignatureException e) {
-            logger.error("Authentication Failed. Username or Password not valid.");
         }
     }
 }

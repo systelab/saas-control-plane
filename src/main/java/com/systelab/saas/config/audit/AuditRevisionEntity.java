@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionEntity;
 
-import javax.persistence.Entity;
-import javax.validation.constraints.NotBlank;
+import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor

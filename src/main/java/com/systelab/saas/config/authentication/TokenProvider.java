@@ -1,9 +1,11 @@
 package com.systelab.saas.config.authentication;
 
+
 import com.systelab.saas.config.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,12 +14,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 
 @Configuration
 public class TokenProvider {
@@ -26,9 +28,16 @@ public class TokenProvider {
 
     private final JwtConfig jwtConfig;
 
+    private final Key key;
+
     @Autowired
     public TokenProvider(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
+        if (jwtConfig.getClientSecret()!=null) {
+            key = Keys.hmacShaKeyFor(jwtConfig.getClientSecret().getBytes());
+        } else {
+            key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        }
     }
 
     public Optional<String> getUsernameFromToken(String token) {
@@ -40,8 +49,9 @@ public class TokenProvider {
     }
 
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(jwtConfig.getClientSecret())
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -53,22 +63,23 @@ public class TokenProvider {
     }
 
     public String generateToken(Authentication authentication) {
+
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, getAuthorities(authentication))
-                .signWith(SignatureAlgorithm.HS256, jwtConfig.getClientSecret())
+                .signWith(key)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getTokenValidityInSeconds() * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getTokenValidityInSeconds() * 1000L))
                 .compact();
     }
 
     private String getAuthorities(Authentication authentication) {
         return authentication.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.joining(","));
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(String token, UserDetails userDetails) {
         return getUsernameFromToken(token)
                 .map(username -> username.equals(userDetails.getUsername()) && !isTokenExpired(token))
                 .orElse(false);

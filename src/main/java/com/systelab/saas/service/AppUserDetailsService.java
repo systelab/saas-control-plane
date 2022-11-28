@@ -1,6 +1,7 @@
 package com.systelab.saas.service;
 
 import com.systelab.saas.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -11,14 +12,10 @@ import org.springframework.stereotype.Service;
 
 
 @Service(value = "userManagementService")
+@RequiredArgsConstructor
 public class AppUserDetailsService implements UserDetailsService {
 
-    private UserRepository userRepository;
-
-    @Autowired
-    public AppUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String s) {

@@ -19,6 +19,19 @@ server:
   http2:
     enabled: true
 
+security:
+  jwt:
+    token-validity-in-seconds: 6060
+  cors:
+    #Remove if you do not need to enable cors.
+    allowed-origins:
+      - "http://localhost:4200"
+      - "http://127.0.0.1:8080"
+    allowed-methods: "*"
+    allowed-headers: "*"
+    exposed-headers: "Authorization,Link,X-Total-Count"
+    allow-credentials: true
+    max-age: 1800
 logging:
   level:
     org:
@@ -41,10 +54,6 @@ aws:
   ec2-security-group: XXXXX
   key-pair-name: XXXXX
 
-security:
-  jwt:
-    client-secret: XY7kmzoNzl100
-    token-validity-in-seconds: 6060
 
 spring:
   application:
@@ -53,7 +62,7 @@ spring:
     #Avoid DataSource issue #1142 overriding bean definition
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:h2:file:~/saas
+    url: jdbc:h2:mem:~/saas
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -63,7 +72,14 @@ spring:
     min-evictable-idle-time-millis: 1000
     min-idle: 8
     time-between-eviction-runs-millis: 1
-
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        format_sql: true
   resources:
     cache:
       cachecontrol:
@@ -80,20 +96,3 @@ spring:
   cache:
     jcache:
       config: classpath:ehcache.xml
-
-bucket4j:
-  enabled: true
-  filters:
-    - cache-name: buckets
-      filter-method: servlet
-      filter-order: -10
-      url: .*
-      metrics:
-        tags:
-          - key: IP
-            expression: "getRemoteAddr()"
-      rate-limits:
-        - bandwidths:
-            - capacity: 10000
-              time: 1
-              unit: minutes
